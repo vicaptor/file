@@ -99,3 +99,15 @@ Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wyd
 | Złożoność semantyczna   | Niższa                    | Wyższa                   |
 
 
+## law
+
+| Cecha                    | SDML | NIEM | DFXML | CybOX | LIDO | UCO |
+|-------------------------|------|------|-------|-------|------|-----|
+| Opis fizycznej sceny    | ✓    | ✓    | ✗     | ✗     | ∼    | ∼   |
+| Dowody cyfrowe          | ✓    | ✓    | ✓     | ✓     | ✗    | ✓   |
+| Pozycjonowanie 3D       | ✓    | ✗    | ✗     | ✗     | ✗    | ✗   |
+| Multimedia              | ✓    | ∼    | ∼     | ✗     | ✓    | ∼   |
+| Łańcuch dowodowy        | ✓    | ✓    | ✓     | ∼     | ∼    | ✓   |
+| Metadane prawne         | ✓    | ✓    | ✓     | ∼     | ∼    | ✓   |
+| Prostota użycia         | ✓    | ✗    | ✓     | ∼    | ∼    | ∼   |
+
