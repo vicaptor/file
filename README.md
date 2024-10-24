@@ -82,3 +82,20 @@ Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wyd
 | Walidacja XSD        | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
 
 
+
+
+## file 
+
+
+| Aspekt                    | Media Layer                | Markup Language           |
+|--------------------------|---------------------------|--------------------------|
+| Główny focus             | Warstwy multimedialne     | Struktura dokumentu      |
+| Najlepsze zastosowanie   | Opis scen i przestrzeni   | Semantyczny opis treści  |
+| Podejście do struktury   | Warstwowe                 | Hierarchiczne            |
+| Analogia                 | Jak warstwy w Photoshopie | Jak HTML/XML             |
+| Rozszerzalność          | Przez dodawanie warstw    | Przez nowe znaczniki     |
+| Kompatybilność          | Z systemami multimediów   | Z parsowaniem XML        |
+| Złożoność przestrzenna  | Wyższa                    | Niższa                   |
+| Złożoność semantyczna   | Niższa                    | Wyższa                   |
+
+
