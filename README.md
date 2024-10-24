@@ -111,3 +111,12 @@ Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wyd
 | Metadane prawne         | ✓    | ✓    | ✓     | ∼     | ∼    | ✓   |
 | Prostota użycia         | ✓    | ✗    | ✓     | ∼    | ∼    | ∼   |
 
+
+
+| Standard | Element SDML | Element oryginalny |
+|----------|-------------|-------------------|
+| NIEM     | metadata    | CaseMetadata      |
+| DFXML    | digital-evidence | fileobject   |
+| CybOX    | digital-evidence | Observable   |
+| LIDO     | evidence    | objectDescriptionSet |
+| UCO      | chain-of-custody | ProvenanceRecord |
