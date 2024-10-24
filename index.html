@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDML Viewer & Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.24.1/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.24.1/mode-xml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.24.1/theme-monokai.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: #f4f4f4;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 100vh;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 1rem;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .editor, .preview {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        #xmlEditor {
+            width: 100%;
+            height: 100%;
+        }
+
+        .preview {
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .scene-item {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .scene-item:hover {
+            background: #e9ecef;
+        }
+
+        .scene-item.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .timeline {
+            position: relative;
+            height: 100px;
+            background: white;
+            margin-top: 1rem;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: red;
+            top: 0;
+        }
+
+        #videoPreview {
+            width: 100%;
+            max-height: 400px;
+            margin-bottom: 1rem;
+        }
+
+        .error {
+            color: red;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: #ffe6e6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Scenes</h2>
+            <div id="sceneList"></div>
+        </div>
+        <div class="main-content">
+            <div class="toolbar">
+                <button id="loadFile">Load SDML</button>
+                <button id="saveFile">Save SDML</button>
+                <button id="validateSDML">Validate</button>
+                <button id="exportVideo">Export to Video</button>
+                <button id="importVideo">Import from Video</button>
+            </div>
+            <div class="editor-container">
+                <div class="editor">
+                    <div id="xmlEditor"></div>
+                </div>
+                <div class="preview">
+                    <video id="videoPreview" controls></video>
+                    <div id="scenePreview"></div>
+                    <div class="timeline">
+                        <div class="timeline-marker"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SDMLEditor {
+            constructor() {
+                this.editor = ace.edit("xmlEditor");
+                this.editor.setTheme("ace/theme/monokai");
+                this.editor.session.setMode("ace/mode/xml");
+                this.currentSDML = null;
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.getElementById('loadFile').addEventListener('click', () => this.loadSDMLFile());
+                document.getElementById('saveFile').addEventListener('click', () => this.saveSDMLFile());
+                document.getElementById('validateSDML').addEventListener('click', () => this.validateSDML());
+                document.getElementById('exportVideo').addEventListener('click', () => this.exportToVideo());
+                document.getElementById('importVideo').addEventListener('click', () => this.importFromVideo());
+
+                this.editor.on('change', () => {
+                    this.updatePreview();
+                });
+            }
+
+            async loadSDMLFile() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.sdml';
+                
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    const text = await file.text();
+                    this.editor.setValue(text);
+                    this.currentSDML = this.parseSDML(text);
+                    this.updateSceneList();
+                    this.updatePreview();
+                };
+                
+                input.click();
+            }
+
+            parseSDML(text) {
+                const parser = new DOMParser();
+                return parser.parseFromString(text, "text/xml");
+            }
+
+            updateSceneList() {
+                const sceneList = document.getElementById('sceneList');
+                sceneList.innerHTML = '';
+                
+                const scenes = this.currentSDML.getElementsByTagName('scene');
+                Array.from(scenes).forEach((scene, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'scene-item';
+                    div.textContent = `Scene ${index + 1}`;
+                    div.onclick = () => this.showScene(scene);
+                    sceneList.appendChild(div);
+                });
+            }
+
+            showScene(scene) {
+                const preview = document.getElementById('scenePreview');
+                preview.innerHTML = '';
+
+                // Wyświetlanie metadanych sceny
+                const metadata = document.createElement('div');
+                metadata.innerHTML = `
+                    <h3>Scene Metadata</h3>
+                    <p>Start time: ${scene.getAttribute('start')}</p>
+                    <p>Duration: ${scene.getAttribute('duration')}s</p>
+                `;
+                preview.appendChild(metadata);
+
+                // Wyświetlanie obiektów
+                const objects = scene.getElementsByTagName('object');
+                if (objects.length > 0) {
+                    const objectsList = document.createElement('div');
+                    objectsList.innerHTML = '<h3>Objects</h3>';
+                    Array.from(objects).forEach(obj => {
+                        objectsList.innerHTML += `
+                            <p>${obj.getAttribute('label')} 
+                               (confidence: ${obj.getAttribute('confidence')})</p>
+                        `;
+                    });
+                    preview.appendChild(objectsList);
+                }
+
+                // Wyświetlanie transkrypcji
+                const transcriptions = scene.getElementsByTagName('transcription');
+                if (transcriptions.length > 0) {
+                    const transList = document.createElement('div');
+                    transList.innerHTML = '<h3>Transcriptions</h3>';
+                    Array.from(transcriptions).forEach(trans => {
+                        transList.innerHTML += `
+                            <p>${trans.textContent}</p>
+                        `;
+                    });
+                    preview.appendChild(transList);
+                }
+            }
+
+            async saveSDMLFile() {
+                const content = this.editor.getValue();
+                const blob = new Blob([content], { type: 'text/xml' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'scene.sdml';
+                a.click();
+                
+                URL.revokeObjectURL(url);
+            }
+
+            validateSDML() {
+                try {
+                    const content = this.editor.getValue();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(content, "text/xml");
+                    
+                    // Sprawdzanie błędów parsowania
+                    const parseError = doc.getElementsByTagName('parsererror');
+                    if (parseError.length > 0) {
+                        throw new Error("XML parsing error");
+                    }
+
+                    // Własna walidacja struktury SDML
+                    this.validateSDMLStructure(doc);
+                    
+                    alert("SDML is valid!");
+                } catch (error) {
+                    alert(`Validation error: ${error.message}`);
+                }
+            }
+
+            validateSDMLStructure(doc) {
+                // Sprawdzanie wymaganych elementów
+                const requiredElements = ['metadata', 'scenes'];
+                requiredElements.forEach(elem => {
+                    if (doc.getElementsByTagName(elem).length === 0) {
+                        throw new Error(`Missing required element: ${elem}`);
+                    }
+                });
+
+                // Sprawdzanie scen
+                const scenes = doc.getElementsByTagName('scene');
+                Array.from(scenes).forEach(scene => {
+                    if (!scene.getAttribute('start')) {
+                        throw new Error('Scene missing start attribute');
+                    }
+                });
+            }
+
+            async exportToVideo() {
+                // To byłaby implementacja eksportu do video
+                alert('Export to video feature would go here');
+            }
+
+            async importFromVideo() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/*';
+                
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    const video = document.getElementById('videoPreview');
+                    video.src = URL.createObjectURL(file);
+                    
+                    // Tu byłaby implementacja analizy video i generowania SDML
+                    // W rzeczywistej implementacji używalibyśmy API do analizy video
+                };
+                
+                input.click();
+            }
+
+            updatePreview() {
+                try {
+                    const content = this.editor.getValue();
+                    this.currentSDML = this.parseSDML(content);
+                    this.updateSceneList();
+                } catch (error) {
+                    console.error('Preview update error:', error);
+                }
+            }
+        }
+
+        // Inicjalizacja edytora
+        const sdmlEditor = new SDMLEditor();
+    </script>
+</body>
+</html>
