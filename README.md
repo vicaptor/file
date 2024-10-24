@@ -66,3 +66,19 @@ Znane konflikty .smdf:
 
 Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wydaje się nadal dobrym wyborem dla Stream Media Description File.
 
+
+
+| Cecha                  | SDML | IMSC | EBU-TT | DFXP | SMIL | TTML |
+|-----------------------|------|------|--------|------|------|------|
+| Napisy                | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
+| Audiodeskrypcja       | ✓    | ×    | ×      | ×    | ∼    | ×    |
+| Metadane mediów       | ✓    | ∼    | ✓      | ∼    | ∼    | ∼    |
+| Synchronizacja        | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
+| Stylowanie            | ✓    | ✓    | ✓      | ✓    | ∼    | ✓    |
+| Pozycjonowanie        | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
+| Wielojęzyczność      | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
+| Streaming            | ✓    | ∼    | ∼      | ×    | ∼    | ×    |
+| Opis scen            | ✓    | ×    | ×      | ×    | ∼    | ×    |
+| Walidacja XSD        | ✓    | ✓    | ✓      | ✓    | ✓    | ✓    |
+
+
