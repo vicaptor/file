@@ -99,7 +99,9 @@ Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wyd
 | Złożoność semantyczna   | Niższa                    | Wyższa                   |
 
 
+
 ## law
+
 
 | Cecha                    | SDML | NIEM | DFXML | CybOX | LIDO | UCO |
 |-------------------------|------|------|-------|-------|------|-----|
@@ -111,6 +113,8 @@ Konflikty istnieją, ale są na tyle małe i w innych dziedzinach, że .smdf wyd
 | Metadane prawne         | ✓    | ✓    | ✓     | ∼     | ∼    | ✓   |
 | Prostota użycia         | ✓    | ✗    | ✓     | ∼    | ∼    | ∼   |
 
+
+## standardy
 
 
 | Standard | Element SDML | Element oryginalny |
@@ -129,7 +133,6 @@ Porównanie SDML z UCO i NIEM:
 1. UCO (Unified Cyber Ontology):
 
 Różnice:
-```markdown
 | Aspekt                  | SDML                          | UCO                           |
 |------------------------|-------------------------------|-------------------------------|
 | Format podstawowy      | XML, bardziej tradycyjny     | JSON-LD, nowoczesny RDF      |
@@ -138,12 +141,10 @@ Różnice:
 | Przestrzeń 3D         | Wbudowana                    | Ograniczona                   |
 | Multimedia            | Natywne wsparcie            | Przez rozszerzenia           |
 | Krzywa uczenia       | Łagodniejsza                 | Stroma (wymaga RDF/OWL)      |
-```
 
 2. NIEM (National Information Exchange Model):
 
 Różnice:
-```markdown
 | Aspekt                  | SDML                          | NIEM                          |
 |------------------------|-------------------------------|-------------------------------|
 | Zakres                | Skupiony na scenach           | Ogólny wymiana informacji    |
@@ -152,7 +153,6 @@ Różnice:
 | Implementacja        | Prostsza                      | Złożona                      |
 | Zgodność            | Mniej restrykcyjna            | Bardzo restrykcyjna          |
 | Specjalizacja       | Sceny i multimedia            | Wszystkie aspekty prawne     |
-```
 
 3. Korzyści SDML:
 
